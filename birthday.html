@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎂</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .start-screen {
+            text-align: center;
+            z-index: 100;
+        }
+
+        .start-button {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(145deg, #ff6b9d, #c94b7a);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .light-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .flashing {
+            animation: flashEffect 0.3s ease-in-out 8;
+        }
+
+        @keyframes flashEffect {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.9; }
+        }
+
+        .crystal-heart {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 300px;
+            height: 300px;
+            z-index: 101;
+            opacity: 0;
+            filter: drop-shadow(0 0 30px rgba(255, 107, 157, 0.8));
+        }
+
+        .crystal-heart.show {
+            animation: heartAppear 2s ease-out forwards;
+        }
+
+        @keyframes heartAppear {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .heart-svg {
+            width: 100%;
+            height: 100%;
+            fill: url(#crystal-gradient);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1.05); }
+        }
+
+        .message-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            z-index: 102;
+            opacity: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .message-container.show {
+            animation: messageAppear 1s ease-out 2.5s forwards;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .message-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #333;
+            text-align: center;
+            margin: 0;
+        }
+
+        .message-text strong {
+            color: #ff6b9d;
+            font-size: 28px;
+        }
+
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            z-index: 98;
+        }
+
+        @keyframes fireworkExplode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+
+        .ps-text {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen" id="startScreen">
+        <div class="start-button" id="startButton">
+            🎁<br>Nhấn vào đây<br>nè! 💝
+        </div>
+    </div>
+
+    <div class="light-flash" id="lightFlash"></div>
+
+    <div class="crystal-heart hidden" id="crystalHeart">
+        <svg class="heart-svg" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="crystal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#ffc3dc;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ff6b9d;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M50,90 C50,90 10,60 10,40 C10,25 20,15 30,15 C40,15 45,25 50,30 C55,25 60,15 70,15 C80,15 90,25 90,40 C90,60 50,90 50,90 Z"/>
+        </svg>
+    </div>
+
+    <div class="message-container hidden" id="messageContainer">
+        <p class="message-text">
+            <strong>Sinh nhật zui zẻ nha cô Thư! 🎂</strong><br><br>
+            Chúc Ú tuổi mới dth hơn, xinh hơn, học giỏi hơn và sống hạnh phúc! 🌟<br><br>
+            Rin hong có món quà nào tặng cô Thư vì Rin là món quà lớn nhất của cô Thư rồi 💖<br>
+            <span class="ps-text">(ps: Em ngồi 3 tiếng mới code ra đc cái web này để tặng cô Thư đó : ((, nên nhớ trân trọng nhaaa) 🥺</span>
+        </p>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const startScreen = document.getElementById('startScreen');
+        const lightFlash = document.getElementById('lightFlash');
+        const crystalHeart = document.getElementById('crystalHeart');
+        const messageContainer = document.getElementById('messageContainer');
+
+        startButton.addEventListener('click', function() {
+            // Ẩn màn hình bắt đầu
+            startScreen.classList.add('hidden');
+            
+            // Bắt đầu hiệu ứng nhấp nháy đèn
+            lightFlash.classList.add('flashing');
+            
+            // Sau hiệu ứng nhấp nháy, hiện trái tim
+            setTimeout(() => {
+                lightFlash.classList.remove('flashing');
+                crystalHeart.classList.remove('hidden');
+                crystalHeart.classList.add('show');
+                
+                // Hiện lời nhắn
+                messageContainer.classList.remove('hidden');
+                messageContainer.classList.add('show');
+                
+                // Bắt đầu pháo hoa
+                startFireworks();
+            }, 2400);
+        });
+
+        function createFirework(x, y) {
+            const colors = ['#ff6b9d', '#ffc3dc', '#a8e6cf', '#ffd700', '#ff8c00', '#da70d6'];
+            const particles = 30;
+            
+            for (let i = 0; i < particles; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = x + 'px';
+                firework.style.top = y + 'px';
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (Math.PI * 2 * i) / particles;
+                const velocity = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity;
+                
+                firework.style.setProperty('--tx', tx + 'px');
+                firework.style.setProperty('--ty', ty + 'px');
+                
+                document.body.appendChild(firework);
+                
+                firework.style.animation = 'fireworkExplode 1s ease-out forwards';
+                
+                setTimeout(() => {
+                    firework.remove();
+                }, 1000);
+            }
+        }
+
+        function startFireworks() {
+            const interval = setInterval(() => {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight * 0.6;
+                createFirework(x, y);
+            }, 800);
+
+            // Dừng pháo hoa sau 15 giây
+            setTimeout(() => {
+                clearInterval(interval);
+            }, 15000);
+        }
+    </script>
+</body>
+</html>
